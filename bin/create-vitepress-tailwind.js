@@ -28,6 +28,13 @@ async function main() {
         console.log('📦 Инициализация VitePress...');
         execSync('npx vitepress init', { stdio: 'inherit' });
 
+        // Проверяем, создана ли папка .vitepress
+        if (!fs.existsSync('.vitepress')) {
+            console.log('⚠️ Папка .vitepress не найдена. Пропускаем настройку шаблона...');
+            console.log('📝 Вы можете запустить скрипт еще раз, когда папка .vitepress будет создана.');
+            process.exit(0);
+        }
+
         // Обновляем package.json
         console.log('📦 Обновление package.json...');
         const packageJsonPath = 'package.json';
@@ -97,7 +104,9 @@ export default {
         console.log('⚙️ Настройка VitePress...');
 
         const vitepressConfigPath = getConfigPath('.vitepress/config');
-        const configContent = `import { defineConfig } from "vitepress";
+
+        if (fs.existsSync(vitepressConfigPath)) {
+            const configContent = `import { defineConfig } from "vitepress";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vitepress.vuejs.org/config/app-configs
@@ -108,7 +117,15 @@ export default defineConfig({
 });
 `;
 
-        fs.writeFileSync(vitepressConfigPath, configContent);
+            fs.writeFileSync(vitepressConfigPath, configContent);
+        } else {
+            console.log('⚠️ Файл конфигурации VitePress не найден. Пропускаем обновление конфигурации...');
+        }
+
+        // Создаем директорию theme если её нет
+        if (!fs.existsSync('.vitepress/theme')) {
+            fs.mkdirSync('.vitepress/theme', { recursive: true });
+        }
 
         // Создаем файл tailwind.css
         fs.writeFileSync(
