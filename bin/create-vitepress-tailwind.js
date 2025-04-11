@@ -28,9 +28,25 @@ async function main() {
         console.log('📦 Инициализация VitePress...');
         execSync('npx vitepress init', { stdio: 'inherit' });
 
-        // Устанавливаем Tailwind CSS и PostCSS
-        console.log('📦 Установка Tailwind CSS и PostCSS...');
-        execSync('npm install -D tailwindcss postcss autoprefixer', { stdio: 'inherit' });
+        // Обновляем package.json
+        console.log('📦 Обновление package.json...');
+        const packageJsonPath = 'package.json';
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+
+        // Добавляем или обновляем devDependencies
+        packageJson.devDependencies = {
+            ...packageJson.devDependencies,
+            "vitepress": "^1.6.3",
+            "vue": "^3.3.4",
+            '@tailwindcss/postcss': '^4.1.3',
+            '@tailwindcss/vite': '^4.1.3',
+            'tailwindcss': '^4.1.3'
+        };
+
+        fs.writeFileSync(
+            packageJsonPath,
+            JSON.stringify(packageJson, null, 2)
+        );
 
         // Создаем конфигурацию Tailwind
         console.log('⚙️ Настройка Tailwind CSS...');
@@ -111,8 +127,9 @@ async function main() {
         console.log('✅ Проект успешно создан!');
         console.log('\n📝 Следующие шаги:');
         console.log('1. Перейдите в директорию проекта: cd ' + projectName);
-        console.log('2. Запустите проект: npm run docs:dev');
-        console.log('3. Откройте http://localhost:5173 в браузере');
+        console.log('2. Установите зависимости: npm install');
+        console.log('3. Запустите проект: npm run docs:dev');
+        console.log('4. Откройте http://localhost:5173 в браузере');
 
     } catch (error) {
         console.error('❌ Ошибка при создании проекта:', error);
