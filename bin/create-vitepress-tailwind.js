@@ -72,7 +72,6 @@ async function main() {
         };
 
         const tailwindConfigPath = getConfigPath('tailwind.config');
-        const postcssConfigPath = getConfigPath('postcss.config');
 
         fs.writeFileSync(
             tailwindConfigPath,
@@ -80,49 +79,72 @@ async function main() {
         );
 
         // Создаем конфигурацию PostCSS
-        const postcssConfig = {
-            plugins: {
-                tailwindcss: {},
-                autoprefixer: {},
-            },
-        };
-
         fs.writeFileSync(
-            postcssConfigPath,
-            `export default ${JSON.stringify(postcssConfig, null, 2)}`
+            'postcss.config.mjs',
+            `import { postcssIsolateStyles } from 'vitepress'
+
+export default {
+    plugins: [
+        postcssIsolateStyles({
+            includeFiles: [/vp-doc\\.css/, /base\\.css/]
+        })
+    ]
+}
+`
         );
 
         // Обновляем конфигурацию VitePress
         console.log('⚙️ Настройка VitePress...');
 
         const vitepressConfigPath = getConfigPath('.vitepress/config');
-        const vitepressConfig = fs.readFileSync(vitepressConfigPath, 'utf-8');
+        const configContent = `import { defineConfig } from "vitepress";
+import tailwindcss from "@tailwindcss/vite";
 
-        const updatedConfig = vitepressConfig.replace(
-            'export default defineConfig({',
-            `export default defineConfig({
+// https://vitepress.vuejs.org/config/app-configs
+export default defineConfig({
   vite: {
-    css: {
-      postcss: {
-        plugins: [
-          (await import('tailwindcss')).default,
-          (await import('autoprefixer')).default,
-        ],
-      },
-    },
-  },`
-        );
+    plugins: [tailwindcss()],
+  },
+});
+`;
 
-        fs.writeFileSync(vitepressConfigPath, updatedConfig);
+        fs.writeFileSync(vitepressConfigPath, configContent);
 
-        // Создаем глобальный CSS файл
-        const globalCssPath = '.vitepress/theme/style.css';
+        // Создаем файл tailwind.css
         fs.writeFileSync(
-            globalCssPath,
-            `@tailwind base;
-@tailwind components;
-@tailwind utilities;`
+            '.vitepress/theme/tailwind.css',
+            `@import "tailwindcss";`
         );
+
+        // Обновляем index.ts/js в theme
+        const themeIndexPath = fs.existsSync('.vitepress/theme/index.ts')
+            ? '.vitepress/theme/index.ts'
+            : '.vitepress/theme/index.js';
+
+        if (fs.existsSync(themeIndexPath)) {
+            let themeContent = fs.readFileSync(themeIndexPath, 'utf-8');
+
+            // Проверяем, есть ли уже импорт файла CSS
+            if (themeContent.includes("import './style.css'")) {
+                themeContent = themeContent.replace(
+                    "import './style.css'",
+                    "import './style.css'\nimport './tailwind.css'"
+                );
+            } else {
+                // Добавляем импорт в начало файла
+                themeContent = "import './tailwind.css'\n" + themeContent;
+            }
+
+            fs.writeFileSync(themeIndexPath, themeContent);
+        } else {
+            // Если файл не существует, создаем его
+            fs.writeFileSync(
+                '.vitepress/theme/index.js',
+                `import './tailwind.css'
+
+export default {}`
+            );
+        }
 
         console.log('✅ Проект успешно создан!');
         console.log('\n📝 Следующие шаги:');
