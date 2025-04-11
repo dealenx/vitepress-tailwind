@@ -83,3 +83,98 @@ import Sigma from './.vitepress/theme/components/Sigma.vue'
 
 The `:::raw` directive allows the component to be displayed without special processing by VitePress. **This is a key feature** for correctly displaying Vue components within Markdown, as it prevents the component's HTML markup from being converted to plain text.
 
+## Подключение Tailwind CSS к существующему проекту VitePress
+
+Если у вас уже есть проект VitePress и вы хотите добавить в него поддержку Tailwind CSS v4, выполните следующие шаги:
+
+### 1. Установите необходимые зависимости
+
+```bash
+# Используя npm
+npm install -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
+```
+через yarn:
+```bash
+yarn add -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
+```
+
+### 2. Создайте конфигурацию PostCSS
+
+Создайте файл `postcss.config.mjs` в корне проекта:
+
+```js
+import { postcssIsolateStyles } from 'vitepress'
+
+export default {
+    plugins: [
+        postcssIsolateStyles({
+            includeFiles: [/vp-doc\.css/, /base\.css/]
+        })
+    ]
+}
+```
+
+### 3. Обновите конфигурацию VitePress
+
+Откройте файл `.vitepress/config.js` (или `.ts`) и обновите его, добавив плагин Tailwind CSS:
+
+```js
+import { defineConfig } from "vitepress";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  // Ваша существующая конфигурация
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
+```
+
+### 4. Создайте CSS-файл Tailwind
+
+Создайте директорию `.vitepress/theme`, если она не существует, и добавьте файл `tailwind.css`:
+
+```bash
+mkdir -p .vitepress/theme
+```
+
+Содержимое файла `.vitepress/theme/tailwind.css`:
+
+```css
+@import "tailwindcss";
+```
+
+### 5. Подключите Tailwind CSS в теме VitePress
+
+Откройте или создайте файл `.vitepress/theme/index.js` (или `.ts`):
+
+```js
+import "./tailwind.css";
+import DefaultTheme from "vitepress/theme";
+
+export default {
+  ...DefaultTheme,
+  enhanceApp({ app }) {},
+};
+```
+
+### 6. Проверьте интеграцию
+
+Запустите сервер разработки, чтобы проверить, что Tailwind CSS интегрирован корректно:
+
+```bash
+npm run docs:dev
+# или с yarn
+yarn docs:dev
+```
+
+Теперь вы можете использовать классы Tailwind в своих Markdown-файлах с помощью директивы `:::raw`:
+
+```md
+:::raw
+<div class="bg-blue-500 text-white p-4 rounded-lg">
+  Это блок, стилизованный с помощью Tailwind CSS
+</div>
+:::
+```
+
