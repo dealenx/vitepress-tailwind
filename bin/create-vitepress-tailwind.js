@@ -35,17 +35,16 @@ function promptYesNo(question) {
 
     let selectedOption = true; // true = Yes, false = No
 
-    // Display initial options
-    stdout.write(`\n\x1b[36m${question}\x1b[0m\n`);
+    // Display question with diamond symbol
+    stdout.write(`\n\x1b[36m◆ ${question}\x1b[0m\n`);
 
     // Function to render options
     const renderOptions = () => {
-        // Clear line and render options
         stdout.write('\r\x1b[K'); // Clear line
         if (selectedOption) {
-            stdout.write('\x1b[32m● Yes\x1b[0m / \x1b[33mo No\x1b[0m');
+            stdout.write('\x1b[32m● Yes\x1b[0m / \x1b[90m○ No\x1b[0m [');
         } else {
-            stdout.write('\x1b[32mo Yes\x1b[0m / \x1b[33m● No\x1b[0m');
+            stdout.write('\x1b[90m○ Yes\x1b[0m / \x1b[32m● No\x1b[0m [');
         }
     };
 
