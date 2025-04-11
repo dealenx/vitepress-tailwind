@@ -46,7 +46,7 @@ function promptYesNo(question) {
         } else {
             stdout.write('\x1b[90m○ Yes\x1b[0m / \x1b[32m● No\x1b[0m');
         }
-        // Скрыть курсор
+        // Hide cursor
         stdout.write('\x1b[?25l');
     };
 
@@ -64,13 +64,13 @@ function promptYesNo(question) {
                 renderOptions();
             } else if (key === '\r' || key === '\n') { // Enter
                 stdout.write('\n');
-                // Показать курсор перед завершением
+                // Show cursor before completion
                 stdout.write('\x1b[?25h');
                 stdin.setRawMode(false);
                 stdin.pause();
                 resolve(selectedOption);
             } else if (key === '\u0003') { // Ctrl+C
-                // Показать курсор перед выходом
+                // Show cursor before exit
                 stdout.write('\x1b[?25h');
                 process.exit();
             }
@@ -78,16 +78,52 @@ function promptYesNo(question) {
     });
 }
 
+// Function to print help information
+function printHelp() {
+    console.log(`
+🌟 @dealenx/vitepress-tailwind CLI 🌟
+
+Commands:
+  npx @dealenx/vitepress-tailwind [project_name]
+  npx @dealenx/vitepress-tailwind init [project_name]
+
+Examples:
+  npx @dealenx/vitepress-tailwind my-docs
+  npx @dealenx/vitepress-tailwind init my-docs
+`);
+}
+
 async function main() {
     try {
-        console.log('🚀 Starting creation of VitePress project with Tailwind CSS...');
+        // Parse command line arguments
+        const args = process.argv.slice(2);
+        let projectName;
 
-        // Get project name
-        const projectName = process.argv[2];
+        if (args.length === 0) {
+            printHelp();
+            process.exit(0);
+        }
+
+        // Check for help command
+        if (args[0] === '--help' || args[0] === '-h') {
+            printHelp();
+            process.exit(0);
+        }
+
+        // Check for init command
+        if (args[0] === 'init') {
+            projectName = args[1];
+        } else {
+            projectName = args[0];
+        }
+
         if (!projectName) {
-            console.error('❌ Please specify project name');
+            console.error('❌ Please specify a project name');
+            printHelp();
             process.exit(1);
         }
+
+        console.log('🚀 Creating VitePress project with Tailwind CSS...');
 
         // Create project directory
         if (!fs.existsSync(projectName)) {
@@ -328,7 +364,7 @@ dist-ssr
         console.log('\n📝 Next steps:');
         console.log('1. Navigate to project directory: cd ' + projectName);
         console.log('2. Install dependencies: npm install');
-        console.log('3. Run the project: npm run docs:dev');
+        console.log('3. Run the project: npm run dev');
         console.log('4. Open http://localhost:5173 in your browser');
 
     } catch (error) {

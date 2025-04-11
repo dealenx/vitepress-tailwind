@@ -1,7 +1,12 @@
 {
   "name": "@dealenx/vitepress-tailwind",
   "private": false,
+  "version": "0.1.0",
+  "description": "VitePress template with Tailwind CSS integration",
   "type": "module",
+  "bin": {
+    "vitepress-tailwind": "bin/create-vitepress-tailwind.js"
+  },
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
@@ -22,5 +27,17 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.3"
+  },
+  "keywords": [
+    "vitepress",
+    "tailwindcss",
+    "template",
+    "starter"
+  ],
+  "author": "dealenx",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dealenx/vitepress-tailwind.git"
   }
 }

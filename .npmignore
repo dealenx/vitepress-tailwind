@@ -1,0 +1,24 @@
+# Исключаем каталоги и файлы, не нужные для публикации в npm
+docs/
+.vitepress/cache/
+.vitepress/dist/
+node_modules/
+.github/
+.vscode/
+
+# Исключаем файлы разработки
+.editorconfig
+.prettierrc
+.eslintrc
+tsconfig.json
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Временные файлы
+.DS_Store
+Thumbs.db 
