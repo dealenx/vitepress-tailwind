@@ -23,6 +23,56 @@ function promptUser(question) {
     });
 }
 
+// Function for interactive Yes/No selection with arrow keys
+function promptYesNo(question) {
+    const stdin = process.stdin;
+    const stdout = process.stdout;
+
+    // Set raw mode to get keypresses
+    stdin.setRawMode(true);
+    stdin.resume();
+    stdin.setEncoding('utf8');
+
+    let selectedOption = true; // true = Yes, false = No
+
+    // Display initial options
+    stdout.write(`\n\x1b[36m${question}\x1b[0m\n`);
+
+    // Function to render options
+    const renderOptions = () => {
+        // Clear line and render options
+        stdout.write('\r\x1b[K'); // Clear line
+        if (selectedOption) {
+            stdout.write('\x1b[32m● Yes\x1b[0m / \x1b[33mo No\x1b[0m');
+        } else {
+            stdout.write('\x1b[32mo Yes\x1b[0m / \x1b[33m● No\x1b[0m');
+        }
+    };
+
+    renderOptions();
+
+    return new Promise((resolve) => {
+        // Handle key presses
+        stdin.on('data', (key) => {
+            // Handle arrow keys, y/n, and enter
+            if (key === '\u001B\u005B\u0044' || key === '\u001B\u005B\u0043' ||
+                key.toLowerCase() === 'y' || key.toLowerCase() === 'n') { // Left/Right arrow or y/n
+                selectedOption = !selectedOption;
+                if (key.toLowerCase() === 'y') selectedOption = true;
+                if (key.toLowerCase() === 'n') selectedOption = false;
+                renderOptions();
+            } else if (key === '\r' || key === '\n') { // Enter
+                stdout.write('\n');
+                stdin.setRawMode(false);
+                stdin.pause();
+                resolve(selectedOption);
+            } else if (key === '\u0003') { // Ctrl+C
+                process.exit();
+            }
+        });
+    });
+}
+
 async function main() {
     try {
         console.log('🚀 Starting creation of VitePress project with Tailwind CSS...');
@@ -210,9 +260,9 @@ dist-ssr
         );
 
         // Ask whether to add rules for Cursor
-        const addCursorRules = await promptUser('📝 Add rules for Cursor editor? (yes/no): ');
+        const addCursorRules = await promptYesNo('Add rules for Cursor editor?');
 
-        if (addCursorRules.toLowerCase() === 'да' || addCursorRules.toLowerCase() === 'y' || addCursorRules.toLowerCase() === 'yes') {
+        if (addCursorRules) {
             console.log('📦 Creating Cursor rules...');
 
             // Create .cursor/rules directory if it doesn't exist
