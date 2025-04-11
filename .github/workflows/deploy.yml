@@ -23,7 +23,7 @@ jobs:
         run: yarn install
 
       - name: Build VitePress
-        run: yarn run build
+        run: VITEPRESS_BASE=/vitepress-tailwind/ yarn build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
