@@ -176,6 +176,62 @@ dist-ssr
 *.sw?`
         );
 
+        // Создаем .cursor/rules директорию и main-rules.mdc файл
+        console.log('📦 Создание правил для Cursor...');
+
+        // Создаем директорию .cursor/rules если она не существует
+        if (!fs.existsSync('.cursor')) {
+            fs.mkdirSync('.cursor');
+        }
+        if (!fs.existsSync('.cursor/rules')) {
+            fs.mkdirSync('.cursor/rules');
+        }
+
+        fs.writeFileSync(
+            '.cursor/rules/main-rules.mdc',
+            `"You are an expert in Node.js, Vitepress, Vue 3, and Tailwind v4.
+      
+      Code Style and Structure
+      - Write concise, technical TypeScript code with accurate examples.
+      - Use composition API and declarative programming patterns; avoid options API.
+      - Prefer iteration and modularization over code duplication.
+      - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+      - Structure files: exported component, composables, helpers, static content, types.
+      
+      Naming Conventions
+      - Use lowercase with dashes for directories (e.g., .vitepress/theme/components/auth-wizard).
+      - Use PascalCase for component names (e.g., AuthWizard.vue).
+      - Use camelCase for composables (e.g., useAuthState.ts).
+      
+      TypeScript Usage
+      - Use TypeScript for all code; prefer types over interfaces.
+      - Avoid enums; use const objects instead.
+      - Use Vue 3 with TypeScript, leveraging defineComponent and PropType.
+      
+      Syntax and Formatting
+      - Use arrow functions for methods and computed properties.
+      - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+      - Use template syntax for declarative rendering.
+      
+      UI and Styling
+      - Use  Tailwind for components and styling.
+      - Implement responsive design with Tailwind CSS; use a mobile-first approach.
+      
+      
+      Key Conventions
+      - Optimize Web Vitals (LCP, CLS, FID).
+      - Take into account the features of Vitapress, as the site is based on it. 
+
+      
+      Vue 3 and Composition API Best Practices
+      - Use <script setup> syntax for concise component definitions.
+      - Leverage ref, reactive, and computed for reactive state management.
+      - Use provide/inject for dependency injection when appropriate.
+      - Implement custom composables for reusable logic.
+      
+      Follow the official Vitepress and Vue.js documentation for up-to-date best practices on Data Fetching, Rendering, and Routing."`
+        );
+
         console.log('✅ Проект успешно создан!');
         console.log('\n📝 Следующие шаги:');
         console.log('1. Перейдите в директорию проекта: cd ' + projectName);
