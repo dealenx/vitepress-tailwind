@@ -42,10 +42,12 @@ function promptYesNo(question) {
     const renderOptions = () => {
         stdout.write('\r\x1b[K'); // Clear line
         if (selectedOption) {
-            stdout.write('\x1b[32m● Yes\x1b[0m / \x1b[90m○ No\x1b[0m [');
+            stdout.write('\x1b[32m● Yes\x1b[0m / \x1b[90m○ No\x1b[0m');
         } else {
-            stdout.write('\x1b[90m○ Yes\x1b[0m / \x1b[32m● No\x1b[0m [');
+            stdout.write('\x1b[90m○ Yes\x1b[0m / \x1b[32m● No\x1b[0m');
         }
+        // Скрыть курсор
+        stdout.write('\x1b[?25l');
     };
 
     renderOptions();
@@ -62,10 +64,14 @@ function promptYesNo(question) {
                 renderOptions();
             } else if (key === '\r' || key === '\n') { // Enter
                 stdout.write('\n');
+                // Показать курсор перед завершением
+                stdout.write('\x1b[?25h');
                 stdin.setRawMode(false);
                 stdin.pause();
                 resolve(selectedOption);
             } else if (key === '\u0003') { // Ctrl+C
+                // Показать курсор перед выходом
+                stdout.write('\x1b[?25h');
                 process.exit();
             }
         });
