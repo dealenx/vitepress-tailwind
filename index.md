@@ -31,14 +31,13 @@ features:
             <!-- Title -->
             <div class="text-center">
                 <p class="text-xs font-semibold text-gray-500 uppercase mb-3">
-                    Small business solutions
+                    Hello, Friend!
                 </p>
                 <h1 class="text-3xl text-gray-800 font-bold sm:text-5xl lg:text-6xl lg:leading-tight">
-                    Turn online shoppers into <span class="text-blue-500">lifetime customers</span>
+                    Your are looking at <span class="text-blue-500">Tailwind Content</span>
                 </h1>
             </div>
         </div>
     </div>
 </div>
-<!-- End Hero -->
 :::
