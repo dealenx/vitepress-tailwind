@@ -26,7 +26,7 @@ npx @dealenx/vitepress-tailwind init my-docs
 ```bash
 cd my-docs
 npm install
-npm run dev
+npm run docs:dev
 ```
 
 ## Development
