@@ -1,5 +1,5 @@
 {
-  "name": "vitepress-tailwind",
+  "name": "@dealenx/vitepress-tailwind",
   "private": false,
   "type": "module",
   "scripts": {
