@@ -83,24 +83,24 @@ import Sigma from './.vitepress/theme/components/Sigma.vue'
 
 The `:::raw` directive allows the component to be displayed without special processing by VitePress. **This is a key feature** for correctly displaying Vue components within Markdown, as it prevents the component's HTML markup from being converted to plain text.
 
-## Подключение Tailwind CSS к существующему проекту VitePress
+## Adding Tailwind CSS to an Existing VitePress Project
 
-Если у вас уже есть проект VitePress и вы хотите добавить в него поддержку Tailwind CSS v4, выполните следующие шаги:
+If you already have a VitePress project and want to add Tailwind CSS v4 support, follow these steps:
 
-### 1. Установите необходимые зависимости
+### 1. Install Required Dependencies
 
 ```bash
-# Используя npm
+# Using npm
 npm install -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
 ```
-через yarn:
+using yarn:
 ```bash
 yarn add -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
 ```
 
-### 2. Создайте конфигурацию PostCSS
+### 2. Create PostCSS Configuration
 
-Создайте файл `postcss.config.mjs` в корне проекта:
+Create a `postcss.config.mjs` file in the project root:
 
 ```js
 import { postcssIsolateStyles } from 'vitepress'
@@ -114,39 +114,39 @@ export default {
 }
 ```
 
-### 3. Обновите конфигурацию VitePress
+### 3. Update VitePress Configuration
 
-Откройте файл `.vitepress/config.js` (или `.ts`) и обновите его, добавив плагин Tailwind CSS:
+Open your `.vitepress/config.js` (or `.ts`) file and update it by adding the Tailwind CSS plugin:
 
 ```js
 import { defineConfig } from "vitepress";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  // Ваша существующая конфигурация
+  // Your existing configuration
   vite: {
     plugins: [tailwindcss()],
   },
 });
 ```
 
-### 4. Создайте CSS-файл Tailwind
+### 4. Create Tailwind CSS File
 
-Создайте директорию `.vitepress/theme`, если она не существует, и добавьте файл `tailwind.css`:
+Create the `.vitepress/theme` directory if it doesn't exist, and add a `tailwind.css` file:
 
 ```bash
 mkdir -p .vitepress/theme
 ```
 
-Содержимое файла `.vitepress/theme/tailwind.css`:
+Contents of the `.vitepress/theme/tailwind.css` file:
 
 ```css
 @import "tailwindcss";
 ```
 
-### 5. Подключите Tailwind CSS в теме VitePress
+### 5. Connect Tailwind CSS in the VitePress Theme
 
-Откройте или создайте файл `.vitepress/theme/index.js` (или `.ts`):
+Open or create the `.vitepress/theme/index.js` (or `.ts`) file:
 
 ```js
 import "./tailwind.css";
@@ -158,22 +158,22 @@ export default {
 };
 ```
 
-### 6. Проверьте интеграцию
+### 6. Verify the Integration
 
-Запустите сервер разработки, чтобы проверить, что Tailwind CSS интегрирован корректно:
+Start the development server to check that Tailwind CSS is integrated correctly:
 
 ```bash
 npm run docs:dev
-# или с yarn
+# or with yarn
 yarn docs:dev
 ```
 
-Теперь вы можете использовать классы Tailwind в своих Markdown-файлах с помощью директивы `:::raw`:
+Now you can use Tailwind classes in your Markdown files using the `:::raw` directive:
 
 ```md
 :::raw
 <div class="bg-blue-500 text-white p-4 rounded-lg">
-  Это блок, стилизованный с помощью Tailwind CSS
+  This is a block styled with Tailwind CSS
 </div>
 :::
 ```
