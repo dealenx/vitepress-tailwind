@@ -16,8 +16,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 19  # 使用 Node.js 18.x
-          cache: 'npm'
+          node-version: 20  
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn install
