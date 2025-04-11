@@ -45,8 +45,21 @@ async function main() {
             plugins: [],
         };
 
+        // Проверяем существующие конфигурационные файлы
+        const getConfigPath = (baseName) => {
+            const extensions = ['.mts', '.mjs', '.ts', '.js'];
+            for (const ext of extensions) {
+                const path = `${baseName}${ext}`;
+                if (fs.existsSync(path)) return path;
+            }
+            return `${baseName}.js`; // По умолчанию используем .js
+        };
+
+        const tailwindConfigPath = getConfigPath('tailwind.config');
+        const postcssConfigPath = getConfigPath('postcss.config');
+
         fs.writeFileSync(
-            'tailwind.config.js',
+            tailwindConfigPath,
             `export default ${JSON.stringify(tailwindConfig, null, 2)}`
         );
 
@@ -59,13 +72,14 @@ async function main() {
         };
 
         fs.writeFileSync(
-            'postcss.config.js',
+            postcssConfigPath,
             `export default ${JSON.stringify(postcssConfig, null, 2)}`
         );
 
         // Обновляем конфигурацию VitePress
         console.log('⚙️ Настройка VitePress...');
-        const vitepressConfigPath = '.vitepress/config.js';
+
+        const vitepressConfigPath = getConfigPath('.vitepress/config');
         const vitepressConfig = fs.readFileSync(vitepressConfigPath, 'utf-8');
 
         const updatedConfig = vitepressConfig.replace(
@@ -75,8 +89,8 @@ async function main() {
     css: {
       postcss: {
         plugins: [
-          require('tailwindcss'),
-          require('autoprefixer'),
+          (await import('tailwindcss')).default,
+          (await import('autoprefixer')).default,
         ],
       },
     },
