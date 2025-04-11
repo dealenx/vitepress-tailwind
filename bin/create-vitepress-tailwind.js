@@ -8,7 +8,7 @@ import readline from 'readline';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Функция для запроса пользовательского ввода
+// Function for requesting user input
 function promptUser(question) {
     const rl = readline.createInterface({
         input: process.stdin,
@@ -25,38 +25,38 @@ function promptUser(question) {
 
 async function main() {
     try {
-        console.log('🚀 Начинаем создание проекта VitePress с Tailwind CSS...');
+        console.log('🚀 Starting creation of VitePress project with Tailwind CSS...');
 
-        // Запрашиваем имя проекта
+        // Get project name
         const projectName = process.argv[2];
         if (!projectName) {
-            console.error('❌ Пожалуйста, укажите имя проекта');
+            console.error('❌ Please specify project name');
             process.exit(1);
         }
 
-        // Создаем директорию проекта
+        // Create project directory
         if (!fs.existsSync(projectName)) {
             fs.mkdirSync(projectName);
         }
         process.chdir(projectName);
 
-        // Инициализируем VitePress
-        console.log('📦 Инициализация VitePress...');
+        // Initialize VitePress
+        console.log('📦 Initializing VitePress...');
         execSync('npx vitepress init', { stdio: 'inherit' });
 
-        // Проверяем, создана ли папка .vitepress
+        // Check if .vitepress folder was created
         if (!fs.existsSync('.vitepress')) {
-            console.log('⚠️ Папка .vitepress не найдена. Пропускаем настройку шаблона...');
-            console.log('📝 Вы можете запустить скрипт еще раз, когда папка .vitepress будет создана.');
+            console.log('⚠️ Folder .vitepress not found. Skipping template setup...');
+            console.log('📝 You can run the script again when the .vitepress folder is created.');
             process.exit(0);
         }
 
-        // Обновляем package.json
-        console.log('📦 Обновление package.json...');
+        // Update package.json
+        console.log('📦 Updating package.json...');
         const packageJsonPath = 'package.json';
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
-        // Добавляем или обновляем devDependencies
+        // Add or update devDependencies
         packageJson.devDependencies = {
             ...packageJson.devDependencies,
             "vitepress": "^1.6.3",
@@ -71,8 +71,8 @@ async function main() {
             JSON.stringify(packageJson, null, 2)
         );
 
-        // Создаем конфигурацию Tailwind
-        console.log('⚙️ Настройка Tailwind CSS...');
+        // Create Tailwind configuration
+        console.log('⚙️ Setting up Tailwind CSS...');
         const tailwindConfig = {
             content: [
                 './docs/**/*.{vue,js,ts,jsx,tsx,md}',
@@ -84,14 +84,14 @@ async function main() {
             plugins: [],
         };
 
-        // Проверяем существующие конфигурационные файлы
+        // Check existing configuration files
         const getConfigPath = (baseName) => {
             const extensions = ['.mts', '.mjs', '.ts', '.js'];
             for (const ext of extensions) {
                 const path = `${baseName}${ext}`;
                 if (fs.existsSync(path)) return path;
             }
-            return `${baseName}.js`; // По умолчанию используем .js
+            return `${baseName}.js`; // Default to .js
         };
 
         const tailwindConfigPath = getConfigPath('tailwind.config');
@@ -101,7 +101,7 @@ async function main() {
             `export default ${JSON.stringify(tailwindConfig, null, 2)}`
         );
 
-        // Создаем конфигурацию PostCSS
+        // Create PostCSS configuration
         fs.writeFileSync(
             'postcss.config.mjs',
             `import { postcssIsolateStyles } from 'vitepress'
@@ -116,8 +116,8 @@ export default {
 `
         );
 
-        // Обновляем конфигурацию VitePress
-        console.log('⚙️ Настройка VitePress...');
+        // Update VitePress configuration
+        console.log('⚙️ Configuring VitePress...');
 
         const vitepressConfigPath = getConfigPath('.vitepress/config');
 
@@ -135,21 +135,21 @@ export default defineConfig({
 
             fs.writeFileSync(vitepressConfigPath, configContent);
         } else {
-            console.log('⚠️ Файл конфигурации VitePress не найден. Пропускаем обновление конфигурации...');
+            console.log('⚠️ VitePress configuration file not found. Skipping configuration update...');
         }
 
-        // Создаем директорию theme если её нет
+        // Create theme directory if it doesn't exist
         if (!fs.existsSync('.vitepress/theme')) {
             fs.mkdirSync('.vitepress/theme', { recursive: true });
         }
 
-        // Создаем файл tailwind.css
+        // Create tailwind.css file
         fs.writeFileSync(
             '.vitepress/theme/tailwind.css',
             `@import "tailwindcss";`
         );
 
-        // Обновляем index.ts/js в theme
+        // Update index.ts/js in theme
         const themeIndexPath = fs.existsSync('.vitepress/theme/index.ts')
             ? '.vitepress/theme/index.ts'
             : '.vitepress/theme/index.js';
@@ -157,20 +157,20 @@ export default defineConfig({
         if (fs.existsSync(themeIndexPath)) {
             let themeContent = fs.readFileSync(themeIndexPath, 'utf-8');
 
-            // Проверяем, есть ли уже импорт файла CSS
+            // Check if CSS file is already imported
             if (themeContent.includes("import './style.css'")) {
                 themeContent = themeContent.replace(
                     "import './style.css'",
                     "import './style.css'\nimport './tailwind.css'"
                 );
             } else {
-                // Добавляем импорт в начало файла
+                // Add import at the beginning of the file
                 themeContent = "import './tailwind.css'\n" + themeContent;
             }
 
             fs.writeFileSync(themeIndexPath, themeContent);
         } else {
-            // Если файл не существует, создаем его
+            // If file doesn't exist, create it
             fs.writeFileSync(
                 '.vitepress/theme/index.js',
                 `import './tailwind.css'
@@ -179,8 +179,8 @@ export default {}`
             );
         }
 
-        // Создаем .gitignore
-        console.log('📦 Создание .gitignore...');
+        // Create .gitignore
+        console.log('📦 Creating .gitignore...');
         fs.writeFileSync(
             '.gitignore',
             `# Logs
@@ -209,13 +209,13 @@ dist-ssr
 *.sw?`
         );
 
-        // Спрашиваем, нужно ли добавлять правила для Cursor
-        const addCursorRules = await promptUser('📝 Добавить правила для редактора Cursor? (да/нет): ');
+        // Ask whether to add rules for Cursor
+        const addCursorRules = await promptUser('📝 Add rules for Cursor editor? (yes/no): ');
 
         if (addCursorRules.toLowerCase() === 'да' || addCursorRules.toLowerCase() === 'y' || addCursorRules.toLowerCase() === 'yes') {
-            console.log('📦 Создание правил для Cursor...');
+            console.log('📦 Creating Cursor rules...');
 
-            // Создаем директорию .cursor/rules если она не существует
+            // Create .cursor/rules directory if it doesn't exist
             if (!fs.existsSync('.cursor')) {
                 fs.mkdirSync('.cursor');
             }
@@ -269,15 +269,15 @@ dist-ssr
             );
         }
 
-        console.log('✅ Проект успешно создан!');
-        console.log('\n📝 Следующие шаги:');
-        console.log('1. Перейдите в директорию проекта: cd ' + projectName);
-        console.log('2. Установите зависимости: npm install');
-        console.log('3. Запустите проект: npm run docs:dev');
-        console.log('4. Откройте http://localhost:5173 в браузере');
+        console.log('✅ Project successfully created!');
+        console.log('\n📝 Next steps:');
+        console.log('1. Navigate to project directory: cd ' + projectName);
+        console.log('2. Install dependencies: npm install');
+        console.log('3. Run the project: npm run docs:dev');
+        console.log('4. Open http://localhost:5173 in your browser');
 
     } catch (error) {
-        console.error('❌ Ошибка при создании проекта:', error);
+        console.error('❌ Error creating project:', error);
         process.exit(1);
     }
 }
