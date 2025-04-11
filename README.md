@@ -36,22 +36,6 @@ For local development and testing of the template:
 ```bash
 git clone https://github.com/dealenx/vitepress-tailwind.git
 cd vitepress-tailwind
-npm install
-npm run dev
-```
-
-## Publishing to NPM
-
-### Local testing before publishing
-
-```bash
-npm link
-npx vitepress-tailwind test-project
-```
-
-### Publishing the package
-
-```bash
-npm login
-npm publish --access public
+yarn install
+yarn run dev
 ```
