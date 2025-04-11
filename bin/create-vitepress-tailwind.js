@@ -4,8 +4,24 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import readline from 'readline';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Функция для запроса пользовательского ввода
+function promptUser(question) {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            rl.close();
+            resolve(answer);
+        });
+    });
+}
 
 async function main() {
     try {
@@ -193,20 +209,23 @@ dist-ssr
 *.sw?`
         );
 
-        // Создаем .cursor/rules директорию и main-rules.mdc файл
-        console.log('📦 Создание правил для Cursor...');
+        // Спрашиваем, нужно ли добавлять правила для Cursor
+        const addCursorRules = await promptUser('📝 Добавить правила для редактора Cursor? (да/нет): ');
 
-        // Создаем директорию .cursor/rules если она не существует
-        if (!fs.existsSync('.cursor')) {
-            fs.mkdirSync('.cursor');
-        }
-        if (!fs.existsSync('.cursor/rules')) {
-            fs.mkdirSync('.cursor/rules');
-        }
+        if (addCursorRules.toLowerCase() === 'да' || addCursorRules.toLowerCase() === 'y' || addCursorRules.toLowerCase() === 'yes') {
+            console.log('📦 Создание правил для Cursor...');
 
-        fs.writeFileSync(
-            '.cursor/rules/main-rules.mdc',
-            `"You are an expert in Node.js, Vitepress, Vue 3, and Tailwind v4.
+            // Создаем директорию .cursor/rules если она не существует
+            if (!fs.existsSync('.cursor')) {
+                fs.mkdirSync('.cursor');
+            }
+            if (!fs.existsSync('.cursor/rules')) {
+                fs.mkdirSync('.cursor/rules');
+            }
+
+            fs.writeFileSync(
+                '.cursor/rules/main-rules.mdc',
+                `"You are an expert in Node.js, Vitepress, Vue 3, and Tailwind v4.
       
       Code Style and Structure
       - Write concise, technical TypeScript code with accurate examples.
@@ -247,7 +266,8 @@ dist-ssr
       - Implement custom composables for reusable logic.
       
       Follow the official Vitepress and Vue.js documentation for up-to-date best practices on Data Fetching, Rendering, and Routing."`
-        );
+            );
+        }
 
         console.log('✅ Проект успешно создан!');
         console.log('\n📝 Следующие шаги:');
