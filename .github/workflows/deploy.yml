@@ -1,32 +1,44 @@
-name: Deploy VitePress to GitHub Pages
-
+name: Deploy
 on:
   push:
-    branches:
-      - main
+    branches: main
+  pull_request:
+    branches: main
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
+    permissions:
+      id-token: write # Needed for auth with Deno Deploy
+      contents: read # Needed to clone the repository
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Clone repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
         with:
-          node-version: 20  
-          cache: 'yarn'
+          deno-version: v2.x
 
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build VitePress
-        run: yarn build --base=/vitepress-tailwind/
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .vitepress/dist
+          node-version: lts/*
+
+      - name: Install step
+        run: "npm install"
+
+      - name: Build step
+        run: "npm run build"
+
+      - name: Upload to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "daniilgorod-vitepress-t-88"
+          entrypoint: "https://deno.land/std@0.217.0/http/file_server.ts"
+          root: ".vitepress/dist"
+          
+          
