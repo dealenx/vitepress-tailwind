@@ -89,11 +89,16 @@ If you already have a VitePress project and want to add Tailwind CSS v4 support,
 
 ### 1. Install Required Dependencies
 
+Using npm
 ```bash
-# Using npm
 npm install -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
 ```
-using yarn:
+Using pnpm:
+```bash
+pnpm install -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
+```
+
+Using yarn:
 ```bash
 yarn add -D @tailwindcss/postcss@^4.1.3 @tailwindcss/vite@^4.1.3 tailwindcss@^4.1.3
 ```
