@@ -13,11 +13,12 @@ A template for quickly starting a project with [VitePress](https://vitepress.dev
 
 ### Creating a new project
 
+Using npx
 ```bash
-# Using npx
 npx @dealenx/vitepress-tailwind my-docs
+```
 
-# Or with the init command
+```bash
 npx @dealenx/vitepress-tailwind init my-docs
 ```
 
